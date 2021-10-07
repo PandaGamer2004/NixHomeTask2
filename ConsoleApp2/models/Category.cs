@@ -2,23 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 
-using ConsoleApp2.Extentions;
+using ConsoleApp2.Utils;
 
 namespace ConsoleApp2.models
 {
 
-
+    [Serializable]
     public enum RoomCategoryPlacing
     {
         SGL,
         DBL,
         TRPL,
-        QDPL,
-        ExB,
-        CH,
-        BO,ROH
+        QDPL
     }
 
+    [Serializable]
     public enum RoomCategoryType
     {
         ECN,
@@ -26,6 +24,7 @@ namespace ConsoleApp2.models
         LUX
     }
 
+    [Serializable]
     public enum RoomCategoryView
     {
         City,
@@ -33,6 +32,7 @@ namespace ConsoleApp2.models
         Park,
         Valley
     }
+    [Serializable]
     public class Category
     {
         RoomCategoryView roomView;
@@ -50,20 +50,25 @@ namespace ConsoleApp2.models
 
 
         public Category() {
-            Application.getSingeltonApplication().Identity.InitType(this.GetType(), 0, 1);
+            
+        }
+
+        public override string ToString()
+        {
+            return $"\nРазмещение комнаты: {roomPlacing}\nТип комнаты: {roomType}\nВид из комнаты {roomView}";
         }
 
         internal void GetCategoryFromConsole()
         {
 
-            Enum helperEnum = default;
-            this.roomPlacing = helperEnum.GetEnumTypeFromConsole<RoomCategoryPlacing>(String.Format("Введите тип размещения номера({0})", String.Join(" ", Enum.GetValues(typeof(RoomCategoryPlacing)))),
+         
+            this.roomPlacing = EnumUtils.GetEnumTypeFromConsole<RoomCategoryPlacing>(String.Format("Введите тип размещения номера({0})", String.Join(" ", EnumUtils.GetValues<RoomCategoryPlacing>())),
                 "Введите верно тип размещения!!!");
 
-            this.roomView = helperEnum.GetEnumTypeFromConsole<RoomCategoryView>(String.Format("Введите тип вида из номера({0})", String.Join(" ", Enum.GetValues(typeof(RoomCategoryView)))),
+            this.roomView = EnumUtils.GetEnumTypeFromConsole<RoomCategoryView>(String.Format("Введите тип вида из номера({0})", String.Join(" ", EnumUtils.GetValues<RoomCategoryView>())),
                "Введите верно тип вида!!!");
 
-            this.roomType= helperEnum.GetEnumTypeFromConsole<RoomCategoryType>(String.Format("Введите тип номера({0})", String.Join(" ", Enum.GetValues(typeof(RoomCategoryType)))),
+            this.roomType= EnumUtils.GetEnumTypeFromConsole<RoomCategoryType>(String.Format("Введите тип номера({0})", String.Join(" ", EnumUtils.GetValues<RoomCategoryType>())),
                "Введите верно тип номера!!!");
 
         }

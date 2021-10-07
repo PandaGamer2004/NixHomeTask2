@@ -8,7 +8,7 @@ namespace ConsoleApp2.models
     [Serializable]
     class User
     {
-
+        private static Identity identity = new Identity(0, 1);
         private Int32 id;
         private String name;
         private String surname;
@@ -17,14 +17,14 @@ namespace ConsoleApp2.models
         private Int32 passportNumber;
         private DateTime dateOfBirth;
 
+        public int Id { get => id;}
 
         public User() {
-            Application.getSingeltonApplication().Identity.InitType(this.GetType(), 0, 1);
+            this.id = identity.GetNextValue();
         }
        
         public User(string name, string surname, string otchestvo, short passportNumber, DateTime dateOfBirth) : this()
         {
-            this.id = Application.getSingeltonApplication().Identity.GetNextValue(this.GetType());
             this.name = name;
             this.surname = surname;
             this.otchestvo = otchestvo;
@@ -32,29 +32,10 @@ namespace ConsoleApp2.models
             this.dateOfBirth = dateOfBirth;
         }
 
-
-        public void GetUserFromConsole()
+        
+        public static Int32 GetPassportNumbeFromConsole()
         {
-            Console.WriteLine("Введите ФИО пользователя: ");
-
-
-
-            id = Application.getSingeltonApplication().Identity.GetNextValue(this.GetType());
-
-
-            try
-            {
-                var fioString = Console.ReadLine().Trim().Split(" ");
-
-                surname = fioString[0];
-                name = fioString[1];
-                otchestvo = fioString[2];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                //TODO Написать оброботчик исключения для парса фио;
-            }
-
+            Int32 passportNumber = 0;
 
             bool continueReadPassportNumber = true;
             while (continueReadPassportNumber)
@@ -71,13 +52,40 @@ namespace ConsoleApp2.models
                     var passportNumberFromInput = Int32.Parse(inputString);
                     continueReadPassportNumber = false;
                     passportNumber = passportNumberFromInput;
-                }catch(FormatException)
+                }
+                catch (FormatException)
                 {
                     Console.WriteLine("Вы ввели номер пасспорта в неврном формате! Пример ввода: 12345678");
                 }
             }
-           
+            return passportNumber;
+        }
+        public void GetUserFromConsole()
+        {
+            Console.WriteLine("Введите ФИО пользователя: ");
 
+
+
+
+            while(true){ 
+            try
+            {
+                var fioString = Console.ReadLine().Trim().Split(" ");
+
+                surname = fioString[0];
+                name = fioString[1];
+                otchestvo = fioString[2];
+                break;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.WriteLine("Введите верно ФИО. Пример: Пупкин Василий Андреевич");
+            }
+        }
+
+
+            this.passportNumber = GetPassportNumbeFromConsole();
+            
             bool continueReadDateOfBirth = true;
 
 

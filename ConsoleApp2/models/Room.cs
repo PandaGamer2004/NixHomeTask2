@@ -3,39 +3,45 @@ using System.Collections.Generic;
 using System.Text;
 
 
-
+using ConsoleApp2.Utils;
 
 namespace ConsoleApp2.models
 {
-
+    [Serializable]
     public enum MoneyType
     {
         USD,
         RUB,
         UAH
     }
+    [Serializable]
     class Room
     {
+        private static Identity identity = new Identity(0,1); 
         private Int32 id;
         private MoneyType moneyType;
         private short roomNumber;
         private Category roomCategory;
         private float roomPrice;
 
-        public Room(short roomNumber, Category roomCategory, float roomPrice)
+        public int Id { get => id; }
+        public short RoomNumber { get => roomNumber; set => roomNumber = value; }
+
+        public Room(short roomNumber, Category roomCategory, float roomPrice) : this()
         {
-            id = Application.getSingeltonApplication().Identity.GetNextValue(this.GetType());
             this.roomNumber = roomNumber;
             this.roomCategory = roomCategory;
             this.roomPrice = roomPrice;
         }
 
+        public Room() {
+            this.id = identity.GetNextValue();
+        }
 
 
-
-        public void GetRoomFromConsole()
+        public static short GetRoomNumberFromConsole()
         {
-            id = Application.getSingeltonApplication().Identity.GetNextValue(this.GetType());
+            short roomNumber;
             while (true)
             {
                 try
@@ -53,11 +59,17 @@ namespace ConsoleApp2.models
                     Console.WriteLine("Введите номер комнаты в виде числа. Пример: 12");
                 }
             }
+            return roomNumber;
+        }
+        public void GetRoomFromConsole()
+        {
+            this.roomNumber = GetRoomNumberFromConsole();
 
 
             var categoryFromInput = new Category();
             categoryFromInput.GetCategoryFromConsole();
 
+            this.roomCategory = categoryFromInput;
 
             while (true)
             {
@@ -77,17 +89,9 @@ namespace ConsoleApp2.models
                     priceFromInput = Single.Parse(inputSting);
 
 
-                    Console.WriteLine("Введите тип валюты(UAH, USD, RUB): ");
-                    var moneyTypeFromInput = Console.ReadLine().Trim().ToLower();
-                    var tp = moneyTypeFromInput switch
-                    {
-                        "usd" => MoneyType.USD,
-                        "rub" => MoneyType.RUB,
-                        _ => MoneyType.UAH,
-                    };
-
+                    
                     this.roomPrice = priceFromInput;
-                    this.moneyType = tp;
+                    this.moneyType = EnumUtils.GetEnumTypeFromConsole<MoneyType>("Введите тип валюты(UAH, USD, RUB): ", "Введите верно тип валюты!");
 
                     break;
                 }
@@ -97,5 +101,11 @@ namespace ConsoleApp2.models
                 }
             }
         }
+
+        
+        public override string ToString()
+        {
+            return $"Номер комнаты: {roomNumber}\nКатегория комнаты:{roomCategory}\nСтоимость комнаты {roomPrice}{moneyType}";
         }
+    }
 }

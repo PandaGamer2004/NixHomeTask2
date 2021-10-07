@@ -5,6 +5,7 @@ using System.Text;
 using ConsoleApp2.models;
 namespace ConsoleApp2.Containers
 {
+    [Serializable]
     class UserContainer
     {
         private List<User> users = new List<User>();

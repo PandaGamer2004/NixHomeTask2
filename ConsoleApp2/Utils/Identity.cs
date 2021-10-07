@@ -1,39 +1,29 @@
-﻿using ConsoleApp2.models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ConsoleApp2.Utils
 {
     [Serializable]
-    public class Identity 
+    class Identity
     {
-        private readonly Dictionary<Type, SeedAndIncrementValuePair> objectAndTheirInitialPair
-                = new Dictionary<Type, SeedAndIncrementValuePair>();
+        private Int32 seed = 0;
+        private Int32 incrementValue = 0;
 
-
-
-
-        public void InitType(Type target, Int32 seedValue, Int32 incrementValue)
+        public Identity(Int32 seed, Int32 incrementValue)
         {
-            if(!objectAndTheirInitialPair.ContainsKey(target))
-                objectAndTheirInitialPair[target] = new SeedAndIncrementValuePair(seedValue, incrementValue);
+            this.seed = seed;
+            this.incrementValue = incrementValue;
         }
 
-
-        public Int32 GetNextValue(Type o)
+        public Int32 GetNextValue()
         {
-            SeedAndIncrementValuePair currentObjectPair;
-
-            if(!objectAndTheirInitialPair.TryGetValue(o, out currentObjectPair)){
-                throw new ArgumentException("Object should be Initialized before try to get next value");
-            }
-            else
-            {
-                currentObjectPair.IncrementSeed();
-                return currentObjectPair.Seed;
-            }
+            seed += incrementValue;
+            return seed;
         }
 
-       
+        
+        public Int32 Seed => seed;
+        public Int32 IncrementValue => incrementValue;
     }
 }

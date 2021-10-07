@@ -5,25 +5,36 @@ using System.Collections.Generic;
 
 using ConsoleApp2.models;
 using ConsoleApp2.Containers;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
 namespace ConsoleApp2
 {
     class Program
     {
+        private static string filePath = "application.dat";
         static void Main(string[] args)
         {
-            var container = new UserContainer();
-            var u1 = new User();
-            u1.GetUserFromConsole();
-            container.AddUser(u1);
-            var u2 = new User();
-            u2.GetUserFromConsole();
-            container.AddUser(u2);
-            var u3 = new User();
-            u3.GetUserFromConsole();
-            container.AddUser(u3);
+            FileStream fs = null;
+            Application app = null;
+            try
+            {
+                fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                var formatter = new BinaryFormatter();
+                app = (Application)formatter.Deserialize(fs);
+            }
+            catch(FileNotFoundException)
+            {
+                app = Application.getSingeltonApplication();
+            }
+            finally
+            {
+                fs?.Close();
+            }
 
-            var res = container.GetUsersByDateOfBirth(DateTime.Parse("04.04.2003"));
-
+                app.RunApplication();
+            
+            
         }
     }
 }
